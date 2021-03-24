@@ -139,20 +139,6 @@ public:
    * \param sched is the UE scheduler to set in the UE side 
    */
   void SetUlScheduler (std::string sched);
-
-  /**
-   * \return the UE selected resource mapping type
-   *
-   * This allows you to get access to the Sl UE selected resource value.
-   */
-  std::string GetSlUeSelResMapping (void) const;
-
-  /**
-   * \set the UE selected resource mapping type
-   *
-   * \param mapping is the UE selected mapping to set in the UE side
-   */
-  void SetSlUeSelResMapping (std::string mapping);
  
   /**
    * TracedCallback signature for transmission of discovery message.

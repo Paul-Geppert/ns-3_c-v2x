@@ -53,12 +53,6 @@ public:
   void SetDataTxP0 (int16_t p0);
 
   /**
-   * Sets the SL OffsetIndicator 
-   * \param slOffsetIndicator
-   */ 
-  void SetSlOffsetIndicator(uint16_t slOffsetIndicator);
-
-  /**
    * Sets the SL subframe  bitmap of the resource pool, which is defined by repeating 
    * the bitmap within a SFN cycle (see TS 36.213)
    * \param slSubframe
@@ -103,20 +97,6 @@ public:
    * \param startRbPscchPool
    */ 
   void SetStartRbPscchPool(uint16_t startRbPscchPool);
-
-  /**
-   * Sets the S-RSSI threshold for determing the contribution 
-   * \param thresSRSSICBR
-   */ 
-  void SetThreshSrssiCbr(uint16_t thresSrssiCbr);
-
-  /**
-   * Sets the zone ID for which the UE shall use this resource pool. This field is absent 
-   * in v2x-CommTxPoolExceptional, p2x-CommTxPoolNormalCommon and v2x-CommRxPool in SIB21 
-   * or in mobilityControlInfoV2x.
-   * \param zoneId
-   */ 
-  void SetZoneId(uint16_t zoneId);
 
   /** 
    * Indicates if the configuration is for a UE selected pool

@@ -104,13 +104,6 @@ public:
    */
   void SetFrequency (double freq);
 
-  /** 
-   * set the rooftop height
-   * 
-   * \param rooftopHeight
-   */
-  void SetRooftopHeight (double rooftopHeight);
-
   /**
    * Compute the pathloss based on the positions of the two nodes
    *

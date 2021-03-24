@@ -117,15 +117,6 @@ public:
   void UpdateDlHarqProcessStatus (uint8_t id, uint8_t layer, double mi, uint16_t infoBytes, uint16_t codeBytes);
 
   /**
-  * \brief Update the Info associated to the decodification of an HARQ process
-  * for DL (asynchronous)
-  * \param id the HARQ proc id
-  * \param layer layer no. (for MIMO spatail multiplexing)
-  * \param sinr the new SINR
-  */
-  void UpdateDlHarqProcessStatus (uint8_t id, uint8_t layer, double sinr);
-
-  /**
   * \brief Reset the info associated to the decodification of an HARQ process
   * for DL (asynchronous)
   * \param id the HARQ proc id
