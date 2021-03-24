@@ -112,7 +112,7 @@ def init_command(self):
 def apply_command(self):
 	#self.meths.remove('apply_core')
 	# create the task
-	task = self.create_task('command')
+	task = self.create_task('command_task')
 	setattr(task, "dep_vars", getattr(self, "dep_vars", None))
 	# process the sources
 	inputs = []
