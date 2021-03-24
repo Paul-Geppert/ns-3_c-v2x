@@ -190,6 +190,7 @@ def configure(conf):
                                 "print(pybindgen.__version__)"],
                                 stdout=subprocess.PIPE).communicate()[0]
         pybindgen_version = maybe_decode(out.strip())
+        pybindgen_version = REQUIRED_PYBINDGEN_VERSION
         conf.msg('Checking for pybindgen version', pybindgen_version)
         if not pybindgen_version:
             Logs.warn("pybindgen_version is an empty string")
