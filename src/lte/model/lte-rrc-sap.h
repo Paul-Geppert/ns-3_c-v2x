@@ -1636,7 +1636,8 @@ struct NumSubchannel{
 
   static uint16_t SlBandwidthAsInt(SlBandwidth pBandwidth)
   {
-    uint16_t bandwidth; 
+    // Initialized to zero due to compiler warning treated as error
+    uint16_t bandwidth = 0; 
     switch(pBandwidth.bandwidth){
     case SlBandwidth::n6:
       bandwidth = 6;
@@ -2460,7 +2461,8 @@ struct SlCbrPreconfigTxConfigList {
 
   static TxProbability TxProbabilityFromInt (uint32_t p)
   {
-    TxProbability prob;
+    // Initialized to {} due to compiler warning treated as error
+    TxProbability prob = {};
     switch (p)
     {
       case 25:
