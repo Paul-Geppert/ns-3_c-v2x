@@ -1,22 +1,22 @@
 FROM ubuntu:latest
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
-    python \
-    python-dev \
+    python3 \
+    python3-dev \
+    python3-pip \
     gcc \
     g++ \
     git \
-    curl
+    curl \
+    wget
 
 RUN git clone https://github.com/gjcarneiro/pybindgen /pybindgen/ \
     && cd /pybindgen/ \
     && git reset --hard 823d8b2b
 
-RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | python
-
 RUN apt install -y castxml \
-    && pip install cxxfilt \
-    && pip install pygccxml==1.9.0
+    && pip3 install cxxfilt \
+    && pip3 install pygccxml==1.9.0
 
 WORKDIR /ns3/
 
