@@ -112,7 +112,7 @@ private:
   bool m_linkUp; ///< link uo
   mutable uint16_t m_mtu; ///< MTU
 
-  Mac64Address m_address; ///< MAC address - only relevant for UEs.
+  Mac48Address m_address; ///< MAC address - only relevant for UEs.
 };
 
 
