@@ -2,7 +2,7 @@ FROM ubuntu:focal
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
     python3.8 \
-    python3-dev \
+    python3.8-dev \
     python3-pip \
     gcc \
     g++ \
