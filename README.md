@@ -1,5 +1,25 @@
 # Cellular Vehicle-to-Everything (C-V2X) Mode 4 Communication Model for ns-3
 
+(Please find the original README below.)
+
+This project was forked from [https://github.com/FabianEckermann/ns-3_c-v2x](https://github.com/FabianEckermann/ns-3_c-v2x) and provides the same functions, but bindings for Python 3.8 are fixed.
+
+I also added a simple method to compile the code:
+
+This will take some time. A Docker container that contains all relevant requirements will be created and the build starts automatically. Also note that the first compilation will fail as the Bindings cannot be completely generated. A fix will be applied by the script and it will continue to compile ns-3, which should be successful now.
+
+```sh
+cd ns-3_c-v2x
+./compile.sh
+cd ..
+```
+
+If the build container is not close automatically, leave it by calling `exit`.
+
+---------------------
+
+# Cellular Vehicle-to-Everything (C-V2X) Mode 4 Communication Model for ns-3
+
 A ns-3 model for C-V2X Mode 4 communication based on the ns-3 D2D model from [NIST](https://github.com/usnistgov/psc-ns3/tree/d2d-ns-3.22).
 
 ## Installation
