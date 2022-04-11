@@ -287,7 +287,7 @@ def ns3_python_bindings(bld):
             pymod.env.append_value('LINKFLAGS', '-Wl,-Bdynamic,--no-whole-archive')
     defines = list(pymod.env['DEFINES'])
     defines.extend(['NS_DEPRECATED=', 'NS3_DEPRECATED_H'])
-    if Options.platform == 'win32':
+    if Options.sys.platform == 'win32':
         try:
             defines.remove('_DEBUG') # causes undefined symbols on win32
         except ValueError:
@@ -439,7 +439,7 @@ def apply(self):
     output_filename = 'lib%s.pc' % os.path.basename(module.target)
     output_node = self.path.find_or_declare(output_filename)
     assert output_node is not None, str(self)
-    task = self.create_task('ns3pcfile')
+    task = self.create_task('ns3pcfile_task')
     self.bld.install_files('${LIBDIR}/pkgconfig', output_node)
     task.set_outputs([output_node])
     task.module = module
@@ -458,7 +458,7 @@ def apply_ns3header(self):
             raise WafError("source ns3 header file %s not found" % (filename,))
         dst_node = ns3_dir_node.find_or_declare(src_node.name)
         assert dst_node is not None
-        task = self.create_task('ns3header')
+        task = self.create_task('ns3header_task')
         task.mode = getattr(self, 'mode', 'install')
         if task.mode == 'install':
             self.bld.install_files('${INCLUDEDIR}/%s%s/ns3' % (wutils.APPNAME, wutils.VERSION), [src_node])
@@ -551,7 +551,7 @@ def apply_ns3privateheader(self):
             raise WafError("source ns3 header file %s not found" % (filename,))
         dst_node = ns3_dir_node.find_or_declare(src_node.name)
         assert dst_node is not None
-        task = self.create_task('ns3privateheader')
+        task = self.create_task('ns3privateheader_task')
         task.mode = getattr(self, 'mode', 'install')
         if task.mode == 'install':
             task.set_inputs([src_node])
@@ -742,7 +742,7 @@ def apply_ns3moduleheader(self):
         return
 
     all_headers_outputs = [ns3_dir_node.find_or_declare("%s-module.h" % self.module)]
-    task = self.create_task('gen_ns3_module_header')
+    task = self.create_task('gen_ns3_module_header_task')
     task.module = self.module
     task.mode = getattr(self, "mode", "install")
     if task.mode == 'install':
