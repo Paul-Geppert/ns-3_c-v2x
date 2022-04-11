@@ -1636,7 +1636,7 @@ struct NumSubchannel{
 
   static uint16_t SlBandwidthAsInt(SlBandwidth pBandwidth)
   {
-    uint16_t bandwidth; 
+    uint16_t bandwidth = 0;
     switch(pBandwidth.bandwidth){
     case SlBandwidth::n6:
       bandwidth = 6;
@@ -2460,7 +2460,7 @@ struct SlCbrPreconfigTxConfigList {
 
   static TxProbability TxProbabilityFromInt (uint32_t p)
   {
-    TxProbability prob;
+    TxProbability prob = {};
     switch (p)
     {
       case 25:

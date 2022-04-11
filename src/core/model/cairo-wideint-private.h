@@ -33,6 +33,8 @@
 #ifndef CAIRO_WIDEINT_H
 #define CAIRO_WIDEINT_H
 
+#include <climits> // UINT_MAX
+
 /**
  * \file
  * \ingroup highprec
