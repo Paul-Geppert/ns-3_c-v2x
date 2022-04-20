@@ -2066,7 +2066,9 @@ LteUePhy::SubframeIndication (uint32_t frameNo, uint32_t subframeNo)
                     psschRbs.push_back(i); 
                   }
 
-                  for (int i = txIt->rbStart-2 ; i < txIt->rbStart + txIt->rbLen ; i++)
+                  // GPA: Original has - 2 -> Why ?
+                  // for (int i = txIt->rbStart - 2; i < txIt->rbStart + txIt->rbLen ; i++)
+                  for (int i = txIt->rbStart ; i < txIt->rbStart + txIt->rbLen ; i++)
                   {
                     rbMask.push_back (i);
                   }
