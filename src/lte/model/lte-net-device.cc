@@ -100,7 +100,7 @@ void
 LteNetDevice::SetAddress (Address address)
 {
   NS_LOG_FUNCTION (this << address);
-  m_address = Mac64Address::ConvertFrom (address);
+  m_address = Mac48Address::ConvertFrom (address);
 }
 
 

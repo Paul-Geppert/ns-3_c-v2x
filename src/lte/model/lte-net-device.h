@@ -24,6 +24,7 @@
 
 #include <ns3/net-device.h>
 #include <ns3/event-id.h>
+#include <ns3/mac48-address.h>
 #include <ns3/mac64-address.h>
 #include <ns3/traced-callback.h>
 #include <ns3/nstime.h>
@@ -112,7 +113,7 @@ private:
   bool m_linkUp; ///< link uo
   mutable uint16_t m_mtu; ///< MTU
 
-  Mac64Address m_address; ///< MAC address - only relevant for UEs.
+  Mac48Address m_address; ///< MAC address - only relevant for UEs.
 };
 
 
