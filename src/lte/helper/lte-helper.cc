@@ -1270,7 +1270,7 @@ LteHelper::ActivateSidelinkBearer (NetDeviceContainer ueDevices, Ptr<LteSlTft> t
 void
 LteHelper::ActivateSidelinkBearer (Ptr<NetDevice> ueDevice, Ptr<LteSlTft> tft)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << ueDevice << tft);
 
   NS_ASSERT_MSG (m_epcHelper != 0, "sidelink bearers cannot be set up when the EPC is not used");
 

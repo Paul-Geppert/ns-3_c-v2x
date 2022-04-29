@@ -967,7 +967,7 @@ LteUeRrc::DoSendData (Ptr<Packet> packet, uint8_t bid)
 void
 LteUeRrc::DoSendSidelinkData (Ptr<Packet> packet, uint32_t group)
 {
-  NS_LOG_FUNCTION (this << packet << "for sidelink group " <<group);
+  NS_LOG_FUNCTION (this << packet << "for sidelink group " << group);
   //Find the PDCP for sidelink transmission
   Ptr<LteSidelinkRadioBearerInfo> slrb = m_sidelinkConfiguration->GetSidelinkRadioBearer (group);
   NS_ASSERT_MSG (slrb, "could not find sidelink bearer for group == " << group); //the NAS should be aware about the existance of the bearer or not
@@ -1021,7 +1021,7 @@ LteUeRrc::DoDisconnect ()
 void
 LteUeRrc::DoActivateSidelinkRadioBearer (uint32_t group, bool tx, bool rx)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << group << tx << rx);
 
   NS_ASSERT_MSG(m_sidelinkConfiguration->GetSidelinkRadioBearer (m_sidelinkConfiguration->m_sourceL2Id, group) == NULL,
                 "Sidelink bearer with src="<< m_sidelinkConfiguration->m_sourceL2Id << " and group="<< group <<" is already installed.");
@@ -1224,6 +1224,7 @@ LteUeRrc::DoDeactivateSidelinkRadioBearer (uint32_t group)
 Ptr<LteSidelinkRadioBearerInfo>
 LteUeRrc::AddSlrb (uint32_t source, uint32_t destination, uint8_t lcid)
 {
+  NS_LOG_FUNCTION (this << source << destination << lcid);
   Ptr<LteSidelinkRadioBearerInfo> slbInfo = CreateObject <LteSidelinkRadioBearerInfo> ();
     slbInfo->m_sourceL2Id = source;
     slbInfo->m_destinationL2Id = destination;

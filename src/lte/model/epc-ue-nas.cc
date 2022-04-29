@@ -265,6 +265,10 @@ EpcUeNas::Send (Ptr<Packet> packet)
             Ptr<Packet> pCopy = packet->Copy ();
             Ipv4Header ipv4Header;
             pCopy->RemoveHeader (ipv4Header);
+
+            NS_LOG_LOGIC ("Source: " << ipv4Header.GetSource ());
+            NS_LOG_LOGIC ("Destination: " << ipv4Header.GetDestination ());
+
             for (std::list<Ptr<LteSlTft> >::iterator it = m_slBearersActivatedList.begin ();
                 it != m_slBearersActivatedList.end ();
                 it++)

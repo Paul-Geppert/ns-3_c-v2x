@@ -155,7 +155,11 @@ Ipv4AddressHelper::Assign (const NetDeviceContainer &c)
       NS_ASSERT_MSG (interface >= 0, "Ipv4AddressHelper::Assign(): "
                      "Interface index not found");
 
-      Ipv4InterfaceAddress ipv4Addr = Ipv4InterfaceAddress (NewAddress (), m_mask);
+      auto newAddr = NewAddress ();
+
+      NS_LOG_LOGIC ("New IPv4 Address to assign is " << newAddr);
+
+      Ipv4InterfaceAddress ipv4Addr = Ipv4InterfaceAddress (newAddr, m_mask);
       ipv4->AddAddress (interface, ipv4Addr);
       ipv4->SetMetric (interface, 1);
       ipv4->SetUp (interface);

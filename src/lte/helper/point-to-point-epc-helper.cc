@@ -415,7 +415,7 @@ PointToPointEpcHelper::ActivateEpsBearer (Ptr<NetDevice> ueDevice, uint64_t imsi
 void
 PointToPointEpcHelper::ActivateSidelinkBearer (Ptr<NetDevice> ueDevice, Ptr<LteSlTft> tft)
 {
-  NS_LOG_FUNCTION (this << ueDevice);
+  NS_LOG_FUNCTION (this << ueDevice << tft);
 
   Ptr<LteUeNetDevice> ueLteDevice = ueDevice->GetObject<LteUeNetDevice> ();
   NS_ASSERT (ueLteDevice);
