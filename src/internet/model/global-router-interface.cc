@@ -1068,6 +1068,16 @@ GlobalRouter::ProcessPointToPointLink (Ptr<NetDevice> ndLocal, GlobalRoutingLSA 
   //
   Ptr<Channel> ch = ndLocal->GetChannel ();
 
+  // 
+  // Some devices, like VirtualNetDevice, are PointToPoint devices but do not have a channel associated.
+  // In this case we cannot find other devices (and routers).
+  // Skip the device in this case.
+  //
+  if (!ch) {
+    NS_LOG_WARN ("NetDevice has no associated channel. Skipping it now.");
+    return;
+  }
+
   //
   // Get the net device on the other side of the point-to-point channel.
   //
