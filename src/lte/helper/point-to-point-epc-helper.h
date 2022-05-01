@@ -60,6 +60,8 @@ public:
    */
   PointToPointEpcHelper ();
 
+  PointToPointEpcHelper (Ipv4AddressHelper * ah);
+
   /** 
    * Destructor
    */  
@@ -95,10 +97,13 @@ public:
 
 private:
 
+  void init ();
+
   /** 
    * helper to assign IPv4 addresses to UE devices as well as to the TUN device of the SGW/PGW
+   * Implemented as C++ pointer and not Ptr<> as Ipv4AddressHelper is a helper and not a ns3 Object
    */
-  Ipv4AddressHelper m_uePgwAddressHelper;
+  Ipv4AddressHelper * m_uePgwAddressHelper;
   /** 
    * helper to assign IPv6 addresses to UE devices as well as to the TUN device of the SGW/PGW
    */

@@ -53,13 +53,38 @@ NS_LOG_COMPONENT_DEFINE ("PointToPointEpcHelper");
 
 NS_OBJECT_ENSURE_REGISTERED (PointToPointEpcHelper);
 
-
-PointToPointEpcHelper::PointToPointEpcHelper () 
-  : m_gtpuUdpPort (2152)  // fixed by the standard
+PointToPointEpcHelper::PointToPointEpcHelper (Ipv4AddressHelper * ah)
 {
   NS_LOG_FUNCTION (this);
+
   // To access the attribute value within the constructor
   ObjectBase::ConstructSelf (AttributeConstructionList ());
+
+  m_uePgwAddressHelper = ah;
+
+  init();
+}
+
+
+PointToPointEpcHelper::PointToPointEpcHelper ()
+{
+  NS_LOG_FUNCTION (this);
+
+  // To access the attribute value within the constructor
+  ObjectBase::ConstructSelf (AttributeConstructionList ());
+
+  m_uePgwAddressHelper = new Ipv4AddressHelper ();
+  // we use a /8 net for all UEs
+  m_uePgwAddressHelper->SetBase ("7.0.0.0", "255.0.0.0");
+
+  init();
+}
+
+void
+PointToPointEpcHelper::init () 
+{
+  NS_LOG_FUNCTION (this);
+  m_gtpuUdpPort = 2152;  // fixed by the standard
 
   // since we use point-to-point links for all S1-U links, 
   // we use a /30 subnet which can hold exactly two addresses 
@@ -67,9 +92,6 @@ PointToPointEpcHelper::PointToPointEpcHelper ()
   m_s1uIpv4AddressHelper.SetBase ("10.0.0.0", "255.255.255.252");
 
   m_x2Ipv4AddressHelper.SetBase ("12.0.0.0", "255.255.255.252");
-
-  // we use a /8 net for all UEs
-  m_uePgwAddressHelper.SetBase ("7.0.0.0", "255.0.0.0");
 
   // we use a /64 IPv6 net all UEs
   m_uePgwAddressHelper6.SetBase ("7777:f00d::", Ipv6Prefix (64));
@@ -455,7 +477,7 @@ PointToPointEpcHelper::GetPgwNode ()
 Ipv4InterfaceContainer 
 PointToPointEpcHelper::AssignUeIpv4Address (NetDeviceContainer ueDevices)
 {
-  return m_uePgwAddressHelper.Assign (ueDevices);
+  return m_uePgwAddressHelper->Assign (ueDevices);
 }
 
 Ipv6InterfaceContainer 
