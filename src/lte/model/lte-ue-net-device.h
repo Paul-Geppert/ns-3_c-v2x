@@ -25,6 +25,7 @@
 #ifndef LTE_UE_NET_DEVICE_H
 #define LTE_UE_NET_DEVICE_H
 
+#include "ns3/net-device.h"
 #include "ns3/lte-net-device.h"
 #include "ns3/event-id.h"
 #include "ns3/traced-callback.h"
@@ -167,6 +168,29 @@ public:
   std::map< uint8_t, Ptr<ComponentCarrierUe> >  GetCcMap (void);
 
 
+  //////////////////////////////////////// Bridged mode compatibility (IEEE 802 support) ///////////////////////////////////////
+  //                                                                                                                          //
+  // In Marvis we need to connect the ns3 devices by TAP devices and bridges on the host into the simulation nodes.           //
+  // We therefore need to implement functions to make LteUeNetDevices compatible to bridges.                                  //
+  // At least we need support for TapBridge, but BridgeNetDevice may be used in the future for even more sophisticated setups //
+  //                                                                                                                          //
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////// Required for TapBridge //////////////////////////////
+
+  /**
+   * \brief Set the callback used to notify higher layers that a packet has been received. Required for bridged mode.
+   * \param cb the callback
+   */
+  virtual void SetPromiscReceiveCallback (PromiscReceiveCallback cb); 
+
+  /** 
+   * \brief Receive a packet from the lower layers in order to forward it to the upper layers.
+   * \param p the packet
+   */
+  void Receive (Ptr<Packet> p);
+
 
 protected:
   // inherited from Object
@@ -200,6 +224,8 @@ private:
   uint32_t m_csgId; ///< the CSG ID
 
   std::map < uint8_t, Ptr<ComponentCarrierUe> > m_ccMap; ///< CC map
+
+  NetDevice::PromiscReceiveCallback m_promiscRxCallback;
 
 }; // end of class LteUeNetDevice
 

@@ -95,6 +95,8 @@ public:
 protected:
   
   NetDevice::ReceiveCallback m_rxCallback; ///< receive callback
+
+  Mac48Address m_address; ///< MAC address - only relevant for UEs.
   
 private:
   /// type conversion operator
@@ -112,8 +114,6 @@ private:
   uint32_t m_ifIndex; ///< interface index
   bool m_linkUp; ///< link uo
   mutable uint16_t m_mtu; ///< MTU
-
-  Mac48Address m_address; ///< MAC address - only relevant for UEs.
 };
 
 

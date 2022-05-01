@@ -38,6 +38,7 @@
 #include "lte-ue-net-device.h"
 #include "lte-ue-mac.h"
 #include "lte-ue-rrc.h"
+#include "ns3/arp-header.h"
 #include "ns3/ipv4-header.h"
 #include "ns3/ipv6-header.h"
 #include "ns3/ipv4.h"
@@ -45,6 +46,7 @@
 #include "lte-amc.h"
 #include "lte-ue-phy.h"
 #include "epc-ue-nas.h"
+#include <ns3/arp-l3-protocol.h>
 #include <ns3/ipv4-l3-protocol.h>
 #include <ns3/ipv6-l3-protocol.h>
 #include <ns3/log.h>
@@ -283,10 +285,58 @@ LteUeNetDevice::DoInitialize (void)
   m_rrc->Initialize ();
 }
 
+void
+LteUeNetDevice::SetPromiscReceiveCallback (PromiscReceiveCallback cb)
+{
+  NS_LOG_FUNCTION (this);
+  m_promiscRxCallback = cb;
+}
+
 bool
 LteUeNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protocolNumber)
 {
   NS_LOG_FUNCTION (this << dest << protocolNumber);
+
+  if (!m_promiscRxCallback.IsNull() && protocolNumber == ArpL3Protocol::PROT_NUMBER) {
+
+    /*
+    * The LteUeNetDevice is in bridged mode and is asked to send an ARP packet.
+    * 
+    * This is because the devices connected on the other side of the bridge assume the LteUeNetDevice is compatible
+    * with ARP and MAC addresses (like Ethernet and 802.11 Wifi) as it is connected to the bridge.
+    * 
+    * We imitate this behaviour by answering all ARP packets with our own address.
+    * 
+    * The LteUeNetDevice should only receive ARP requests for the configured Sidelink destination address.
+    * If the configured Sidelink destination is a multicast address, we do not expect to receive an ARP request.
+    * 
+    * All other traffic from the simulation nodes is expected to be in form of IPv4 or IPv6 packets
+    * or transmitted via other network interfaces/devices.
+    */
+
+    NS_LOG_INFO ("Received ARP packet and returning own MAC address as answer, as device is in bridged mode");
+
+    auto header = ArpHeader ();
+    packet->RemoveHeader (header);
+
+    auto originalRequesterMac = header.GetSourceHardwareAddress();
+
+    header.SetReply(
+      // Source HW
+      m_address,
+      // Source IP
+      header.GetDestinationIpv4Address(),
+      // Des HW
+      originalRequesterMac,
+      // Dest IP
+      header.GetSourceIpv4Address()
+    );
+    packet->AddHeader(header);
+
+    m_promiscRxCallback (this, packet, ArpL3Protocol::PROT_NUMBER, m_address, originalRequesterMac, PACKET_HOST);
+    return true;
+  }
+
   if (protocolNumber != Ipv4L3Protocol::PROT_NUMBER && protocolNumber != Ipv6L3Protocol::PROT_NUMBER)
     {
       NS_LOG_INFO ("unsupported protocol " << protocolNumber << ", only IPv4 and IPv6 are supported");
@@ -295,5 +345,60 @@ LteUeNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protocol
   return m_nas->Send (packet);
 }
 
+void
+LteUeNetDevice::Receive (Ptr<Packet> p)
+{
+  NS_LOG_FUNCTION (this << p);
+
+  // We only send and receive IPv4 and IPv6 packets
+  // Extract the received type from the IP header
+
+  uint8_t ipType;
+  p->CopyData (&ipType, 1);
+  ipType = (ipType>>4) & 0x0f;
+
+  if (!m_promiscRxCallback.IsNull ())
+  {
+    /**
+    * LteUeNetDevice is in bridged mode
+    * 
+    * The bridge device on the host requires a valid MAC source and destination.
+    * 
+    * Source:
+    * Packages need a suitable source address. For example, 00:00:00:00:00:00 will not work.
+    * -> Use a MAC address which is not used by this or one of the other devices connected to the bridge.
+    * 00:00:00:ff:ff:ff is not expected to be assigned -> use this address.
+    * 
+    * Destination:
+    * The Sidelink data is behaving like broadcast data (at least until this layer).
+    * Routing and packet filtering will happen on higher layers, e.g. IP and UDP.
+    * -> Use the Mac48-Broadcast address to deliver the packet to all devices/nodes connected to the bridge.
+    * 
+    * At the moment, only IP packets are supported, GeoNetworking needs to be added in the future.
+    */
+
+    if (ipType == 0x04)
+    {
+      m_promiscRxCallback (this, p, Ipv4L3Protocol::PROT_NUMBER, Mac48Address("00:00:00:ff:ff:ff"), Mac48Address::GetBroadcast(), PACKET_BROADCAST);
+    }
+    else if (ipType == 0x06)
+    {
+      m_promiscRxCallback (this, p, Ipv6L3Protocol::PROT_NUMBER, Mac48Address("00:00:00:ff:ff:ff"), Mac48Address::GetBroadcast(), PACKET_BROADCAST);
+    }
+    else
+    {
+      NS_ABORT_MSG ("LteUeNetDevice::Receive for m_promiscRxCallback - Unknown IP type...");
+    }
+  }
+
+  // Forward packet to higher layer
+
+  if (ipType == 0x04)
+    m_rxCallback (this, p, Ipv4L3Protocol::PROT_NUMBER, Address ());
+  else if (ipType == 0x06)
+    m_rxCallback (this, p, Ipv6L3Protocol::PROT_NUMBER, Address ());
+  else
+    NS_ABORT_MSG ("LteUeNetDevice::Receive - Unknown IP type...");
+}
 
 } // namespace ns3
