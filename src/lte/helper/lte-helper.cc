@@ -78,6 +78,81 @@ NS_LOG_COMPONENT_DEFINE ("LteHelper");
 
 NS_OBJECT_ENSURE_REGISTERED (LteHelper);
 
+LtePhyLoggingHelper::LtePhyLoggingHelper ()
+{
+}
+
+LtePhyLoggingHelper::~LtePhyLoggingHelper ()
+{
+}
+
+void
+LtePhyLoggingHelper::LogPacketBurst (
+  Ptr<PcapFileWrapper>    file,
+  Ptr<const PacketBurst>  pb)
+{
+  NS_LOG_FUNCTION (file << pb);
+
+  auto now = Simulator::Now ();
+  for (Ptr<Packet> p : pb->GetPackets())
+  {
+    file->Write (now, p);
+  }
+}
+
+void
+LtePhyLoggingHelper::LogPacket (
+  Ptr<PcapFileWrapper>  file,
+  Ptr<const Packet>     packet)
+{
+  NS_LOG_FUNCTION (file << packet);
+
+  file->Write (Simulator::Now (), packet);
+}
+
+void
+LtePhyLoggingHelper::EnablePcapInternal (std::string prefix, Ptr<NetDevice> nd, bool promiscuous, bool explicitFilename)
+{
+  NS_LOG_FUNCTION (this << prefix << nd << promiscuous << explicitFilename);
+
+  // All of the Pcap enable functions vector through here including the ones
+  // that are wandering through all of devices on perhaps all of the nodes in
+  // the system. We can only deal with devices of type LteNetDevice.
+  Ptr<LteUeNetDevice> device = nd->GetObject<LteUeNetDevice> ();
+  if (device == 0)
+    {
+      NS_LOG_INFO ("LtePhyLoggingHelper::EnablePcapInternal(): Device " << &device << " not of type ns3::LteNetDevice");
+      return;
+    }
+
+  Ptr<LteUePhy> phy = device->GetPhy ();
+  NS_ABORT_MSG_IF (phy == 0, "LtePhyLoggingHelper::EnablePcapInternal(): Phy layer in LteNetDevice must be set");
+
+  Ptr<LteSpectrumPhy> slSpectrumPhy = phy->GetSlSpectrumPhy ();
+  NS_ABORT_MSG_IF (slSpectrumPhy == 0, "LtePhyLoggingHelper::EnablePcapInternal(): SL SpectrumPhy layer in LteNetDevice must be set");
+
+  Ptr<LteSpectrumPhy> ulSpectrumPhy = phy->GetUplinkSpectrumPhy ();
+  NS_ABORT_MSG_IF (ulSpectrumPhy == 0, "LtePhyLoggingHelper::EnablePcapInternal(): UL SpectrumPhy layer in LteNetDevice must be set");
+
+  PcapHelper pcapHelper;
+
+  std::string filename;
+  if (explicitFilename)
+    {
+      filename = prefix;
+    }
+  else
+    {
+      filename = pcapHelper.GetFilenameFromDevice (prefix, device);
+    }
+
+  Ptr<PcapFileWrapper> file = pcapHelper.CreateFile (filename, std::ios::out, PcapHelper::DLT_IEEE802_11);
+
+  ulSpectrumPhy->TraceConnectWithoutContext ("TxStart", MakeBoundCallback (&LtePhyLoggingHelper::LogPacketBurst, file));
+  slSpectrumPhy->TraceConnectWithoutContext ("RxEndOk", MakeBoundCallback (&LtePhyLoggingHelper::LogPacket, file));
+  slSpectrumPhy->TraceConnectWithoutContext ("RxEndError", MakeBoundCallback (&LtePhyLoggingHelper::LogPacket, file));
+}
+
 LteHelper::LteHelper (void)
   : m_fadingStreamsAssigned (false),
     m_imsiCounter (0),
@@ -235,6 +310,12 @@ TypeId LteHelper::GetTypeId (void)
                    MakeUintegerChecker<uint16_t> (MIN_NO_CC, MAX_NO_CC))
   ;
   return tid;
+}
+
+void
+LteHelper::EnablePcap (std::string prefix, Ptr<NetDevice> nd, bool promiscuous, bool explicitFilename)
+{
+  m_ltePhyLoggingHelper.EnablePcap (prefix, nd, promiscuous, explicitFilename);
 }
 
 void

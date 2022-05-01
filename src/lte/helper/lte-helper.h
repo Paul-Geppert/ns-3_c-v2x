@@ -48,6 +48,7 @@
 #include <ns3/lte-sl-tft.h>
 #include <ns3/component-carrier-enb.h>
 #include <ns3/cc-helper.h>
+#include <ns3/trace-helper.h>
 #include <map>
 
 namespace ns3 {
@@ -59,6 +60,49 @@ class SpectrumChannel;
 class EpcHelper;
 class PropagationLossModel;
 class SpectrumPropagationLossModel;
+
+class LtePhyLoggingHelper : public PcapHelperForDevice
+{
+  public:
+  LtePhyLoggingHelper ();
+  virtual ~LtePhyLoggingHelper ();
+
+protected:
+  /**
+   * \param file the pcap file wrapper
+   * \param pb the packet burst
+   *
+   * Handle rx and tx pcap.
+   */
+  static void LogPacket (Ptr<PcapFileWrapper> file,
+                         Ptr<const Packet> packet);
+
+  /**
+   * \param file the pcap file wrapper
+   * \param pb the packet burst
+   *
+   * Handle rx and tx pcap.
+   */
+  static void LogPacketBurst (Ptr<PcapFileWrapper> file,
+                              Ptr<const PacketBurst> pb);
+
+private:
+  /**
+   * @brief Enable pcap output the indicated net device.
+   *
+   * NetDevice-specific implementation mechanism for hooking the trace and
+   * writing to the trace file.
+   *
+   * @param prefix Filename prefix to use for pcap files.
+   * @param nd Net device for which you want to enable tracing.
+   * @param promiscuous If true capture all possible packets available at the device.
+   * @param explicitFilename Treat the prefix as an explicit filename if true
+   */
+  virtual void EnablePcapInternal (std::string prefix,
+                                   Ptr<NetDevice> nd,
+                                   bool promiscuous,
+                                   bool explicitFilename);
+};
 
 /**
  * \ingroup lte
@@ -118,6 +162,8 @@ public:
    */
   static TypeId GetTypeId (void);
   virtual void DoDispose (void);
+
+  void EnablePcap (std::string prefix, Ptr<NetDevice> nd, bool promiscuous = false, bool explicitFilename = false);
 
   /** 
    * Set the EpcHelper to be used to setup the EPC network in
@@ -1093,6 +1139,8 @@ private:
    * Number of component carriers that will be installed by default at eNodeB and UE devices.
    */
   uint16_t m_noOfCcs;
+
+  LtePhyLoggingHelper m_ltePhyLoggingHelper;
 
 };   // end of `class LteHelper`
 
