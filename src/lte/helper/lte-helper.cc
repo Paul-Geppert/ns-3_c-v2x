@@ -146,7 +146,7 @@ LtePhyLoggingHelper::EnablePcapInternal (std::string prefix, Ptr<NetDevice> nd, 
       filename = pcapHelper.GetFilenameFromDevice (prefix, device);
     }
 
-  Ptr<PcapFileWrapper> file = pcapHelper.CreateFile (filename, std::ios::out, PcapHelper::DLT_IEEE802_11);
+  Ptr<PcapFileWrapper> file = pcapHelper.CreateFile (filename, std::ios::out, PcapHelper::DLT_NULL);
 
   ulSpectrumPhy->TraceConnectWithoutContext ("TxStart", MakeBoundCallback (&LtePhyLoggingHelper::LogPacketBurst, file));
   slSpectrumPhy->TraceConnectWithoutContext ("RxEndOk", MakeBoundCallback (&LtePhyLoggingHelper::LogPacket, file));
