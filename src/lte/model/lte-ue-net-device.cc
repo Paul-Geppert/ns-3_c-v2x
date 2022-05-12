@@ -109,6 +109,14 @@ TypeId LteUeNetDevice::GetTypeId (void)
                    MakeUintegerAccessor (&LteUeNetDevice::SetCsgId,
                                          &LteUeNetDevice::GetCsgId),
                    MakeUintegerChecker<uint32_t> ())
+    .AddTraceSource ("PacketReceived",
+                    "Trace fired when a new packet is received",
+                    MakeTraceSourceAccessor (&LteUeNetDevice::m_packetReceivedCb),
+                    "ns3::Packet::TracedCallback")
+    .AddTraceSource ("PacketSend",
+                    "Trace fired when a new packet is ready to send",
+                    MakeTraceSourceAccessor (&LteUeNetDevice::m_packetSendCb),
+                    "ns3::Packet::TracedCallback")
   ;
 
   return tid;
@@ -333,6 +341,7 @@ LteUeNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protocol
     );
     packet->AddHeader(header);
 
+    m_packetReceivedCb(packet);
     m_promiscRxCallback (this, packet, ArpL3Protocol::PROT_NUMBER, m_address, originalRequesterMac, PACKET_HOST);
     return true;
   }
@@ -341,7 +350,9 @@ LteUeNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protocol
     {
       NS_LOG_INFO ("unsupported protocol " << protocolNumber << ", only IPv4 and IPv6 are supported");
       return true;
-    }  
+    }
+
+  m_packetSendCb(packet);
   return m_nas->Send (packet);
 }
 
@@ -394,11 +405,18 @@ LteUeNetDevice::Receive (Ptr<Packet> p)
   // Forward packet to higher layer
 
   if (ipType == 0x04)
+  {
+    m_packetReceivedCb(p);
     m_rxCallback (this, p, Ipv4L3Protocol::PROT_NUMBER, Address ());
-  else if (ipType == 0x06)
+  }
+  else if (ipType == 0x06) {
+    m_packetReceivedCb(p);
     m_rxCallback (this, p, Ipv6L3Protocol::PROT_NUMBER, Address ());
+  }
   else
+  {
     NS_ABORT_MSG ("LteUeNetDevice::Receive - Unknown IP type...");
+  }
 }
 
 } // namespace ns3

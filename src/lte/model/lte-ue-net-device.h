@@ -227,6 +227,9 @@ private:
 
   NetDevice::PromiscReceiveCallback m_promiscRxCallback;
 
+  TracedCallback<Ptr<const Packet>> m_packetSendCb;
+  TracedCallback<Ptr<const Packet>> m_packetReceivedCb;
+
 }; // end of class LteUeNetDevice
 
 } // namespace ns3
