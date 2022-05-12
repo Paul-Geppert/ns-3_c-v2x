@@ -390,6 +390,63 @@ LteUeNetDevice::Receive (Ptr<Packet> p)
 
     if (ipType == 0x04)
     {
+      Ipv4Header ipHeader;
+      ipHeader.EnableChecksum();
+      p->RemoveHeader (ipHeader);
+
+      bool changedDestination = false;
+
+      // Receiving devices do not know which C-V2X group addresses exist
+      // In case the destination is a Multicast address, we therefore change the destination of all C-V2X messages to the fixed address 35.0.0.1
+      // In case of Broadcast and Unicast the message should be received correctly.
+      if (ipHeader.GetDestination().IsMulticast())
+      {
+        ipHeader.SetDestination(Ipv4Address("35.0.0.1"));
+        ipHeader.SetTtl(32);
+        changedDestination = true;
+      }
+
+      // IP packet has to contain an UDP packet, this is required by ETSI EN 302 636-3
+      // If we manipulated the IP header, we need to update the UDP header as well
+      // because the UDP headers checksum relies on the IP header
+      if (changedDestination && ipHeader.GetProtocol() == UdpL4Protocol::PROT_NUMBER && ipHeader.GetFragmentOffset() == 0)
+      {
+        uint8_t * udpRawHeader = new uint8_t[8];
+        p->CopyData (udpRawHeader, 8);
+
+        UdpHeader udpHeader;
+        p->RemoveHeader (udpHeader);
+
+        // No fragmentation (the first fragment is also the last one)
+        if (ipHeader.IsLastFragment())
+        {
+          // We changed the destination IP address, so the UDP checksum will be wrong
+          // Unfortunately, we have to create a new header, otherwise checksum calculation will be wrong
+          UdpHeader udpHeaderCopy;
+          udpHeaderCopy.EnableChecksums();
+          udpHeaderCopy.InitializeChecksum(ipHeader.GetSource(), ipHeader.GetDestination(), ipHeader.GetProtocol());
+          udpHeaderCopy.SetSourcePort(udpHeader.GetSourcePort());
+          udpHeaderCopy.SetDestinationPort(udpHeader.GetDestinationPort());
+          udpHeader = udpHeaderCopy;
+        }
+        else
+        {
+          // We changed the destination IP address, so the UDP checksum will be wrong
+          // As we do not know the whole UDP payload here, we cannot calculate the checksum correctly
+          udpHeader.ForceChecksum(0);
+          
+          // The payloadSize needs to be forced, otherwise it will just be this (possibly) fragmented part
+          uint16_t payloadPart1 = udpRawHeader[4];
+          uint16_t payloadPart2 = udpRawHeader[5];
+          uint16_t originalPayloadSize = (((payloadPart1 << 8) & 0xff00) | (payloadPart2 & 0x00ff ));
+          udpHeader.ForcePayloadSize(originalPayloadSize);
+        }
+        free(udpRawHeader);
+        p->AddHeader(udpHeader);
+      }
+
+      p->AddHeader(ipHeader);
+
       m_promiscRxCallback (this, p, Ipv4L3Protocol::PROT_NUMBER, Mac48Address("00:00:00:ff:ff:ff"), Mac48Address::GetBroadcast(), PACKET_BROADCAST);
     }
     else if (ipType == 0x06)
