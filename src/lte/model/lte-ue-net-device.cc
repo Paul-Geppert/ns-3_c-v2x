@@ -41,6 +41,7 @@
 #include "ns3/arp-header.h"
 #include "ns3/ipv4-header.h"
 #include "ns3/ipv6-header.h"
+#include "ns3/udp-header.h"
 #include "ns3/ipv4.h"
 #include "ns3/ipv6.h"
 #include "lte-amc.h"
@@ -49,6 +50,7 @@
 #include <ns3/arp-l3-protocol.h>
 #include <ns3/ipv4-l3-protocol.h>
 #include <ns3/ipv6-l3-protocol.h>
+#include <ns3/udp-l4-protocol.h>
 #include <ns3/log.h>
 #include "epc-tft.h"
 #include <ns3/lte-ue-component-carrier-manager.h>
