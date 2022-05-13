@@ -2066,8 +2066,11 @@ LteUePhy::SubframeIndication (uint32_t frameNo, uint32_t subframeNo)
                     psschRbs.push_back(i); 
                   }
 
-                  // @GPA: Why -2?
-                  for (int i = txIt->rbStart-2; i < txIt->rbStart + txIt->rbLen ; i++)
+                  // From GPA: Original had int i = txIt->rbStart-2 -> This seems to be wrong and causes errors/failures if adjacency is not used
+                  // I guess this was an unintentional error, e.g. not undoing changes after experiments
+                  // This solution should be correct, check lines 1697-1701 of this file for reference.
+                  // PSCCH is handled from lines 2003 - 2011
+                  for (int i = txIt->rbStart ; i < txIt->rbStart + txIt->rbLen ; i++)
                   {
                     rbMask.push_back (i);
                   }
