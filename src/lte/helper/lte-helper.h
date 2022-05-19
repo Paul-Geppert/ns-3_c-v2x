@@ -61,11 +61,11 @@ class EpcHelper;
 class PropagationLossModel;
 class SpectrumPropagationLossModel;
 
-class LtePhyLoggingHelper : public PcapHelperForDevice
+class LteLoggingHelper : public PcapHelperForDevice
 {
   public:
-  LtePhyLoggingHelper ();
-  virtual ~LtePhyLoggingHelper ();
+  LteLoggingHelper ();
+  virtual ~LteLoggingHelper ();
 
 protected:
   /**
@@ -1140,7 +1140,7 @@ private:
    */
   uint16_t m_noOfCcs;
 
-  LtePhyLoggingHelper m_ltePhyLoggingHelper;
+  LteLoggingHelper m_lteLoggingHelper;
 
 };   // end of `class LteHelper`
 
