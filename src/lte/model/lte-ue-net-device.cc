@@ -399,11 +399,11 @@ LteUeNetDevice::Receive (Ptr<Packet> p)
       bool changedDestination = false;
 
       // Receiving devices do not know which C-V2X group addresses exist
-      // In case the destination is a Multicast address, we therefore change the destination of all C-V2X messages to the fixed address 35.0.0.1
+      // In case the destination is a Multicast address, we therefore change the destination of all C-V2X messages to Broadcast
       // In case of Broadcast and Unicast the message should be received correctly.
       if (ipHeader.GetDestination().IsMulticast())
       {
-        ipHeader.SetDestination(Ipv4Address("35.0.0.1"));
+        ipHeader.SetDestination(Ipv4Address::GetBroadcast());
         ipHeader.SetTtl(32);
         changedDestination = true;
       }
