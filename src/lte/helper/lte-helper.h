@@ -792,9 +792,19 @@ public:
   void EnableSlUeMacTraces (void);
 
   /**
+   * Enable V2x trace sinks for SL UE MAC layer.
+   */
+  void EnableSlUeMacV2xTraces (void);
+
+  /**
    * Enable trace sinks for SL UE MAC layer.
    */
   void EnableSlSchUeMacTraces (void);
+
+  /**
+   * Enable V2x trace sinks for SL UE MAC layer.
+   */
+  void EnableSlSchUeMacV2xTraces (void);
 
   /**
    * Enable trace sinks for RLC layer.

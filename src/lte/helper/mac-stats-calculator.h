@@ -107,6 +107,19 @@ public:
   std::string GetSlUeOutputFilename (void);
 
   /**
+   * Set the name of the file where the sidelink ue mac V2X statistics will be stored.
+   *
+   * \param outputFilename string with the name of the file
+   */
+  void SetSlUeV2xOutputFilename (std::string outputFilename);
+
+  /**
+   * Get the name of the file where the sidelink ue mac V2X statistics will be stored.
+   * @return the name of the file where the sidelink statistics will be stored
+   */
+  std::string GetSlUeV2xOutputFilename (void);
+
+  /**
    * Set the name of the file where the sidelink shared channel ue mac statistics will be stored.
    *
    * \param outputFilename string with the name of the file
@@ -114,10 +127,23 @@ public:
   void SetSlSchUeOutputFilename (std::string outputFilename);
 
   /**
+   * Set the name of the file where the sidelink shared channel ue mac V2X statistics will be stored.
+   *
+   * \param outputFilename string with the name of the file
+   */
+  void SetSlSchUeV2xOutputFilename (std::string outputFilename);
+
+  /**
    * Get the name of the file where the sidelink shared channel ue mac statistics will be stored.
    * @return the name of the file where the sidelink statistics will be stored
    */
   std::string GetSlSchUeOutputFilename (void);
+
+  /**
+   * Get the name of the file where the sidelink shared channel ue mac V2X statistics will be stored.
+   * @return the name of the file where the sidelink statistics will be stored
+   */
+  std::string GetSlSchUeV2xOutputFilename (void);
 
   /**
    * Notifies the stats calculator that an downlink scheduling has occurred.
@@ -154,12 +180,22 @@ public:
   * Notifies the stats calculator that a sidelink ue mac scheduling has occurred.
   */
   void SlUeScheduling (SlUeMacStatParameters params);
+
+    /**
+  * Notifies the stats calculator that a sidelink ue mac V2X scheduling has occurred.
+  */
+  void SlUeSchedulingV2x (SlUeMacStatParametersV2x params);
   
   /**
   * Notifies the stats calculator that a sidelink shared channel ue mac scheduling has occurred.
   */
   void SlSharedChUeScheduling (SlUeMacStatParameters params);
 
+
+  /**
+  * Notifies the stats calculator that a sidelink V2X shared channel ue mac scheduling has occurred.
+  */
+  void SlSharedChUeSchedulingV2x (SlUeMacStatParametersV2x params);
 
   /** 
    * Trace sink for the ns3::LteEnbMac::DlScheduling trace source
@@ -191,10 +227,14 @@ public:
    */
   static void SlUeSchedulingCallback (Ptr<MacStatsCalculator> macStats, std::string path, SlUeMacStatParameters params);
 
+  static void SlUeSchedulingCallbackV2x (Ptr<MacStatsCalculator> macStats, std::string path, SlUeMacStatParametersV2x params);
+
   /** 
    * Trace sink for the ns3::LteEnbMac::DlScheduling trace source
    */
   static void SlSharedChUeSchedulingCallback (Ptr<MacStatsCalculator> macStats, std::string path, SlUeMacStatParameters params);
+
+  static void SlSharedChUeSchedulingCallbackV2x (Ptr<MacStatsCalculator> macStats, std::string path, SlUeMacStatParametersV2x params);
 
 
 private:

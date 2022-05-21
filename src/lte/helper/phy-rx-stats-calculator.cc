@@ -233,9 +233,32 @@ PhyRxStatsCalculator::SlPhyReception (PhyReceptionStatParameters params)
         }
       m_slRxFirstWrite = false;
 
-      outFile.open (GetSlRxOutputFilename ().c_str (),  std::ios_base::app);
-          NS_LOG_ERROR ("Can't open file " << GetSlRxOutputFilename ().c_str ());
+      outFile << "time\tcellId\tIMSI\tRNTI\ttxMode\tlayer\tmcs\tsize\trv\tndi\tcorrect\tccId\tsinrPerRb" << std::endl;;
     }
+  else
+  {
+    outFile.open (GetSlRxOutputFilename ().c_str (),  std::ios_base::app);
+    if (!outFile.is_open ())
+      {
+        NS_LOG_ERROR ("Can't open file " << GetSlRxOutputFilename ().c_str ());
+        return;
+      }
+  }
+
+  outFile << params.m_timestamp << "\t";
+  outFile << (uint32_t) params.m_cellId << "\t";
+  outFile << params.m_imsi << "\t";
+  outFile << params.m_rnti << "\t";
+  outFile << (uint32_t) params.m_txMode << "\t";
+  outFile << (uint32_t) params.m_layer << "\t";
+  outFile << (uint32_t) params.m_mcs << "\t";
+  outFile << params.m_size << "\t";
+  outFile << (uint32_t) params.m_rv << "\t"; // This is used for the rbStart
+  outFile << (uint32_t) params.m_ndi << "\t";// This is used for the rbLen
+  outFile << (uint32_t) params.m_correctness << "\t";
+  outFile << (uint32_t) params.m_ccId << "\t";
+  outFile << params.m_sinrPerRb << std::endl;
+  outFile.close ();
 }
 
 void

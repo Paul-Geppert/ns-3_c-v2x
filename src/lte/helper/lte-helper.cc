@@ -1894,7 +1894,9 @@ LteHelper::EnableMacTraces (void)
   EnableDlMacTraces ();
   EnableUlMacTraces ();
   EnableSlUeMacTraces ();
+  EnableSlUeMacV2xTraces();
   EnableSlSchUeMacTraces ();
+  EnableSlSchUeMacV2xTraces ();
 }
 
 void
@@ -1906,11 +1908,27 @@ LteHelper::EnableSlUeMacTraces (void)
 }
 
 void
+LteHelper::EnableSlUeMacV2xTraces (void)
+{
+  NS_LOG_FUNCTION_NOARGS ();
+  Config::Connect ("/NodeList/*/DeviceList/*/LteUeMac/SlUeSchedulingV2x",
+                   MakeBoundCallback (&MacStatsCalculator::SlUeSchedulingCallbackV2x, m_macStats));
+}
+
+void
 LteHelper::EnableSlSchUeMacTraces (void)
 {
   NS_LOG_FUNCTION_NOARGS ();
   Config::Connect ("/NodeList/*/DeviceList/*/LteUeMac/SlSharedChUeScheduling",
                    MakeBoundCallback (&MacStatsCalculator::SlSharedChUeSchedulingCallback, m_macStats));
+}
+
+void
+LteHelper::EnableSlSchUeMacV2xTraces (void)
+{
+  NS_LOG_FUNCTION_NOARGS ();
+  Config::Connect ("/NodeList/*/DeviceList/*/LteUeMac/SlSharedChUeSchedulingV2x",
+                   MakeBoundCallback (&MacStatsCalculator::SlSharedChUeSchedulingCallbackV2x, m_macStats));
 }
 
 void

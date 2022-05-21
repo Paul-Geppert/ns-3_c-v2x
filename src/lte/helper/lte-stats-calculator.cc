@@ -97,6 +97,18 @@ LteStatsCalculator::GetSlUeOutputFilename (void)
 }
 
 void
+LteStatsCalculator::SetSlUeV2xOutputFilename (std::string outputFilename)
+{
+  m_slUeV2xOutputFilename = outputFilename;
+}
+
+std::string
+LteStatsCalculator::GetSlUeV2xOutputFilename (void)
+{
+  return m_slUeV2xOutputFilename;
+}
+
+void
 LteStatsCalculator::SetSlPscchOutputFilename (std::string outputFilename)
 {
   m_slPscchOutputFilename = outputFilename;
@@ -118,6 +130,18 @@ std::string
 LteStatsCalculator::GetSlSchUeOutputFilename (void)
 {
   return m_slSchUeOutputFilename;
+}
+
+void
+LteStatsCalculator::SetSlSchUeV2xOutputFilename (std::string outputFilename)
+{
+  m_slSchUeV2xOutputFilename = outputFilename;
+}
+
+std::string
+LteStatsCalculator::GetSlSchUeV2xOutputFilename (void)
+{
+  return m_slSchUeV2xOutputFilename;
 }
 
 void

@@ -95,6 +95,19 @@ public:
   std::string GetSlUeOutputFilename (void);
 
   /**
+   * Set the name of the file where the sidelink ue mac V2X statistics will be stored.
+   *
+   * \param outputFilename string with the name of the file
+   */
+  void SetSlUeV2xOutputFilename (std::string outputFilename);
+
+  /**
+   * Get the name of the file where the sidelink ue mac V2X statistics will be stored.
+   * @return the name of the file where the uplink statistics will be stored
+   */
+  std::string GetSlUeV2xOutputFilename (void);
+
+  /**
    * Set the name of the file where the sidelink control channel ue statistics will be stored.
    *
    * \param outputFilename string with the name of the file
@@ -115,10 +128,23 @@ public:
   void SetSlSchUeOutputFilename (std::string outputFilename);
 
   /**
+   * Set the name of the file where the sidelink shared channel ue mac V2X statistics will be stored.
+   *
+   * \param outputFilename string with the name of the file
+   */
+  void SetSlSchUeV2xOutputFilename (std::string outputFilename);
+
+  /**
    * Get the name of the file where the sidelink shared channel ue mac statistics will be stored.
    * @return the name of the file where the uplink statistics will be stored
    */
   std::string GetSlSchUeOutputFilename (void);
+
+  /**
+   * Get the name of the file where the sidelink shared channel ue mac V2X statistics will be stored.
+   * @return the name of the file where the uplink statistics will be stored
+   */
+  std::string GetSlSchUeV2xOutputFilename (void);
 
   /**
    * Set the name of the file where the sidelink statistics will be stored.
@@ -269,6 +295,11 @@ private:
   std::string m_slUeOutputFilename;
 
   /**
+   * Name of the file where the sidelink ue mac V2X results will be saved
+   */
+  std::string m_slUeV2xOutputFilename;
+
+  /**
    * Name of the file where the sidelink control channel results will be saved
    */
   std::string m_slPscchOutputFilename;
@@ -277,6 +308,11 @@ private:
    * Name of the file where the sidelink shared channel ue mac results will be saved
    */
   std::string m_slSchUeOutputFilename;
+
+  /**
+   * Name of the file where the sidelink shared channel ue mac V2X results will be saved
+   */
+  std::string m_slSchUeV2xOutputFilename;
 };
 
 } // namespace ns3
