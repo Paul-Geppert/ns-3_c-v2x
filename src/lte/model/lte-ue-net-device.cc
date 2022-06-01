@@ -81,6 +81,18 @@ TypeId LteUeNetDevice::GetTypeId (void)
                    PointerValue (),
                    MakePointerAccessor (&LteUeNetDevice::m_rrc),
                    MakePointerChecker <LteUeRrc> ())
+    .AddAttribute ("LteUeMac",
+                   "The MAC associated to this UeNetDevice",
+                   TypeId::ATTR_GET,
+                   PointerValue (),
+                   MakePointerAccessor (&LteUeNetDevice::GetMac),
+                   MakePointerChecker <LteUeMac> ())
+    .AddAttribute ("LteUePhy",
+                   "The PHY associated to this UeNetDevice",
+                   TypeId::ATTR_GET,
+                   PointerValue (),
+                   MakePointerAccessor (&LteUeNetDevice::GetPhy),
+                   MakePointerChecker <LteUePhy> ())
     .AddAttribute ("LteUeComponentCarrierManager",
                    "The ComponentCarrierManager associated to this UeNetDevice",
                    PointerValue (),
